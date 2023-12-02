@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dice Game</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: "Futura";
+            background-color: #4a6c82;
+            transition: background-color 1s ease;
+        }
+        h1 {
+           font-size: 5rem; 
+           margin: 30px;
+           font-family: "Futura";
+           text-shadow: 5px 0 #e9f2ff;
+           color: #121111;
+           text-align: center;
+           }
+
+        h3 {
+           font-size: 1rem; 
+           margin: 30px;
+           font-family: "Futura";
+           text-shadow: 1px 0 #232931;
+           color: #121111;
+           text-align: center;
+        }
+
+        .container {
+            text-align: center;
+            color: #212121;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .dice-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .dice {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            margin: 0 20px;
+            position: relative;
+        }
+
+        .dice-img {
+            width: 120px; 
+        }
+
+        .score {
+            margin-top: 10px;
+        }
+
+        .btn {
+            background: #606e6a;
+            border: none;
+            border-radius: 7px;
+            color: #ffff;
+            font-size: 18px;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background: #232931;
+        }
+
+        .winner-background {
+            background-color: #11976a;
+        }
+
+        .draw-background {
+            background-color: #c7b466;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Let's Play</h1>
+        <h3>Please edit your name before starting the game</h3>
+        <div class="dice-container">
+            <div class="dice" id="player1">
+                <p class="player-name">Player 1</p>
+                <div class="player-line"></div>
+                <img src="dice6.png" alt="dice 6" class="dice-img">
+                <p class="score">Score: <span id="score1">0</span></p>
+            </div>
+            <div class="dice" id="player2">
+                <p class="player-name">Player 2</p>
+                <div class="player-line"></div>
+                <img src="dice6.png" alt="dice 6" class="dice-img">
+                <p class="score">Score: <span id="score2">0</span></p>
+            </div>
+        </div>
+
+        <div class="container bottom">
+            <button type="button" class="btn" onclick="rollTheDice()">
+                Roll The Dice
+            </button>
+        </div>
+        <div class="container bottom">
+            <button type="button" class="btn" onclick="editNames()">
+                Edit Names
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let player1 = {
+            name: "Player 1",
+            score: 0
+        };
+
+        let player2 = {
+            name: "Player 2",
+            score: 0
+        };
+
+        function editNames() {
+            player1.name = prompt("Change Player 1 Name") || player1.name;
+            player2.name = prompt("Change Player 2 Name") || player2.name;
+
+            updatePlayerNames();
+        }
+
+        function updatePlayerNames() {
+            document.getElementById("player1").querySelector(".player-name").innerHTML = player1.name;
+            document.getElementById("player2").querySelector(".player-name").innerHTML = player2.name;
+        }
+
+        function rollTheDice() {
+    let diceNum1 = document.getElementById("player1").querySelector(".dice-img");
+    let diceNum2 = document.getElementById("player2").querySelector(".dice-img");
+
+    document.body.classList.remove("winner-background", "draw-background");
+
+    setTimeout(() => {
+        let randomNumber1 = Math.floor(Math.random() * 6) + 1;
+        let randomNumber2 = Math.floor(Math.random() * 6) + 1;
+
+        diceNum1.setAttribute('src', 'dice' + randomNumber1 + '.png');
+        diceNum2.setAttribute('src', 'dice' + randomNumber2 + '.png');
+
+        diceNum1.classList.toggle('even-roll', randomNumber1 % 2 === 0);
+        diceNum2.classList.toggle('even-roll', randomNumber2 % 2 === 0);
+        diceNum1.classList.toggle('odd-roll', randomNumber1 % 2 !== 0);
+        diceNum2.classList.toggle('odd-roll', randomNumber2 % 2 !== 0);
+
+        let result = document.querySelector('h1');
+
+        if (randomNumber1 === randomNumber2) {
+            result.innerHTML = "Draw!";
+            document.body.classList.add("draw-background");
+        } else if (randomNumber1 < randomNumber2) {
+            player2.score++;
+            document.getElementById("score2").innerHTML = player2.score;
+            if (player2.score === 5) {
+                endGame(player2.name);
+            }
+            result.innerHTML = (player2.name + " WINS!");
+            document.body.classList.add("winner-background");
+            document.body.classList.remove("draw-background");
+        } else {
+            player1.score++;
+            document.getElementById("score1").innerHTML = player1.score;
+            if (player1.score === 5) {
+                endGame(player1.name);
+            }
+            result.innerHTML = (player1.name + " WINS!");
+            document.body.classList.add("winner-background");
+            document.body.classList.remove("draw-background");
+        }
+
+    }, 2500);
+}
+updatePlayerNames();
+
+function endGame(winner) {
+    alert("Game Over! " + winner + " is the winner with a score of 5!");
+}
+       
+    </script>
+</body>
+
+</html>
